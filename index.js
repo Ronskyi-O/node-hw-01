@@ -1,3 +1,3 @@
-console.log(666);
-console.log(777);
-console.log(888);
+const { contactsPath } = require('./contacts')
+
+console.log(contactsPath);
