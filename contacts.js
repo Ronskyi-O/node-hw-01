@@ -1,52 +1,98 @@
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
-const readline = require('readline');
 
-const contactsPath = path.resolve('./db/contacts.json')
+const contactsPath = path.resolve('./db/contacts.json');
 
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-// })
+function listContacts() {
+    fs.readFile(contactsPath, 'utf-8', (error, data) => {
+        if (error) {
+            return console.log(error);
+        }
 
-
-async function listContacts() {
-    try {
-        const data = await fs.readFile(contactsPath, 'utf8')
-        const contacts = JSON.parse(data)
-        console.log(contacts);
-    } catch (error) {
-        console.log(error);
-    }
+        const contacts = JSON.parse(data);
+        console.log('List of contacts: ');
+        console.table(contacts);
+    });
 }
 
-async function getContactById(contactId) {
-    // try {
-    //     await rl.on('line', (contactId) => {
-    //         const data = fs.readFile(contactsPath, 'utf8')
-    //         const contacts = JSON.parse(data)
-    //         const contactById = (contacts) => {
-    //             contacts.find(contact => contact.id === contactId);
-    //             return console.log(contactById);
-    //         }
-    //     })
-    // } catch (error) {
-    //     console.log(error);
-    // }
-    // rl.close()
+function getContactById(contactId) {
+    fs.readFile(contactsPath, 'utf-8', (error, data) => {
+        if (error) {
+            return console.log(error);
+        }
 
+        const contacts = JSON.parse(data);
+
+        const contact = contacts.find(contact => {
+            if (contact.id === contactId) {
+                console.log(`Get contact by ID ${contactId}:`);
+                console.table(contact);
+                return contact;
+            }
+        });
+
+        if (contact == null) {
+            console.log(`Contact with ID "${contactId}" not found!`);
+        }
+    });
 }
 
 function removeContact(contactId) {
-    // ...твой код
+    fs.readFile(contactsPath, 'utf-8', (error, data) => {
+        if (error) {
+            return console.log(error);
+        }
+
+        const contacts = JSON.parse(data);
+        const newContact = contacts.filter(contact => contact.id !== contactId);
+
+        if (newContact.length === contacts.length) {
+            console.log(
+                `Contact with ID "${contactId}" don't removed! ID "${contactId}" not found!`,
+            );
+            return;
+        }
+
+        console.log('Contact deleted successfully! New list of contacts: ');
+        console.table(newContact);
+
+        fs.writeFile(contactsPath, JSON.stringify(newContact), error => {
+            if (error) {
+                return console.log('error :', error);
+            }
+        });
+    });
 }
 
 function addContact(name, email, phone) {
-    // ...твой код
+    fs.readFile(contactsPath, 'utf-8', (error, data) => {
+        if (error) {
+            return console.log(error);
+        }
+
+        const contacts = JSON.parse(data);
+
+        contacts.push({
+            id: contacts.length + 1,
+            name: name,
+            email: email,
+            phone: phone,
+        });
+
+        console.log('Contacts added successfully! New lists of contacts: ');
+        console.table(contacts);
+
+        fs.writeFile(contactsPath, JSON.stringify(contacts), error => {
+            if (error) {
+                return console.log(error);
+            }
+        });
+    });
 }
 
 module.exports = {
-    contactsPath,
     listContacts,
     getContactById,
-}
+    removeContact,
+    addContact,
+};

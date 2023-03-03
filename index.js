@@ -1,5 +1,27 @@
-const { contactsPath, listContacts, getContactById } = require('./contacts')
+const contacts = require('./contacts');
+const argv = require('yargs').argv;
 
-console.log(contactsPath);
-console.log(listContacts());
-console.log(getContactById());
+function invokeAction({ action, id, name, email, phone }) {
+    switch (action) {
+        case 'list':
+            contacts.listContacts();
+            break;
+
+        case 'get':
+            contacts.getContactById(id);
+            break;
+
+        case 'add':
+            contacts.addContact(name, email, phone);
+            break;
+
+        case 'remove':
+            contacts.removeContact(id);
+            break;
+
+        default:
+            console.warn('\x1B[31m Unknown action type!');
+    }
+}
+
+invokeAction(argv);

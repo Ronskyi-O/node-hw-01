@@ -7,12 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js"
-
   },
   "keywords": [],
   "author": "Alex <oleksandr.ronskyi@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "yargs": "^17.7.1"
   }
 }
